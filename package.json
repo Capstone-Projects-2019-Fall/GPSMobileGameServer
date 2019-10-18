@@ -1,0 +1,27 @@
+{
+  "name": "gpsmobilegameserver",
+  "version": "1.0.0",
+  "description": "readme",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "buid": "npm run sart",
+    "test": "echo \"No test yest...\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cis-cs-capstone-course/GPSMobileGameServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cis-cs-capstone-course/GPSMobileGameServer/issues"
+  },
+  "homepage": "https://github.com/cis-cs-capstone-course/GPSMobileGameServer#readme",
+  "devDependencies": {
+    "mocha": "^6.2.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

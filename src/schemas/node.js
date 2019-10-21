@@ -14,6 +14,7 @@ module.exports = function(mongoose) {
             }
         }
     });
+    nodeSchema.index({location: '2dsphere'});
 
     const Node = mongoose.model('Node', nodeSchema);
 

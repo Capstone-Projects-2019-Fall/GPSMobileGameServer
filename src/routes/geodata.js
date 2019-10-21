@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 module.exports = function(mongoose) {
-    const Node = require('../schemas/node')(mongoose);
+    const {Node} = require('../schemas/node')(mongoose);
 
     let geodata = express.Router();
 
@@ -10,32 +10,30 @@ module.exports = function(mongoose) {
     geodata.use(bodyParser.json());
 
     geodata.get('/', (req, res) => {
-        let lat = req.query.lat;
-        let long = req.query.long;
+        const lat = req.query.lat;
+        const long = req.query.long;
+        const maxDist = req.query.maxDist || 2000;
 
-        const near = Node.Node.find({
+        Node.find({
             location: {
                 $near: {
-                    $maxDistance: 1000,
+                    $maxDistance: maxDist,
                     $geometry: {
                         type: "Point",
                         coordinates: [long, lat]
                     }
                 }
             }
-        }, (err, res) => {
+        }, (err, result) => {
             if (err)
-                console.log(err)
-            return res
+                console.log(err);
+            res.send(JSON.stringify(result));
         });
-        console.log(near);
-        res.send('Done');
     });
 
     geodata.post('/', (req, res) => {
-        console.log(req.body);
 
-        const newNode = new Node.Node({
+        const newNode = new Node({
             name: req.body.name,
             location: req.body.location
         });

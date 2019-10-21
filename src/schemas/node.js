@@ -2,14 +2,20 @@ module.exports = function(mongoose) {
 
     const nodeSchema = new mongoose.Schema({
         name: String,
-        geoData: {
-            "type" : "Point",
-            "coordinates" : [
-                -122.5,
-                37.7
-            ]
+        location: {
+            type: {
+                type: String, // Don't do `{ location: { type: String } }`
+                enum: ['Point'], // 'location.type' must be 'Point'
+                required: true
+            },
+            coordinates: {
+                type: [Number],
+                required: true
+            }
         }
     });
 
-    return Node = mongoose.model('Node', nodeSchema);
+    const Node = mongoose.model('Node', nodeSchema);
+
+    return { nodeSchema, Node}
 };

@@ -1,19 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr', {useNewUrlParser: true});
-
-const geodata = require('./routes/geodata')(mongoose);
-
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-    // we're connected!
-});
-
-const mongo_uri = process.env.MONGODB_URI
+const mongo_uri = process.env.MONGODB_URI;
 
 const mongoose = require('mongoose');
 mongoose.connect(mongo_uri, {useNewUrlParser: true});

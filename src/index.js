@@ -2,12 +2,12 @@ const express = require('express');
 const app = express();
 
 //This works when in heroku
-//const mongo_uri = process.env.MONGODB_URI;
-// const port = process.env.PORT;
+const mongo_uri = process.env.MONGODB_URI;
+const port = process.env.PORT;
 
 //Use this for local test
-const port = 8080;
-const mongo_uri = 'mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr';
+// const port = 8080;
+// const mongo_uri = 'mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr';
 
 const mongoose = require('mongoose');
 mongoose.connect(mongo_uri, {useNewUrlParser: true});

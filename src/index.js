@@ -28,7 +28,7 @@ db.once('open', function() {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use('/geodata', geodata);
-app.use('/userdeck',userdeck);
-app.use('/userdata',userdata);
+app.use('/user/deck',userdeck);
+app.use('/user/data',userdata);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

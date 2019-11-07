@@ -18,6 +18,7 @@ const {User} = require('./schemas/user')(mongoose);
 const geodata = require('./routes/geodata')(mongoose);
 const userdeck = require('./routes/userdeck')(User);
 const userdata = require('./routes/userdata')(User);
+const enemy = require('./routes/enemy')(mongoose);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -30,5 +31,6 @@ app.get('/', (req, res) => res.send('Hello World!'));
 app.use('/geodata', geodata);
 app.use('/user/deck',userdeck);
 app.use('/user/data',userdata);
+app.use('/enemy',enemy);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

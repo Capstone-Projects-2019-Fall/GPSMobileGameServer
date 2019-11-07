@@ -15,7 +15,6 @@ module.exports = function(User) {
             if(err)
                 console.log(err);
             else{
-                const returnPP
                 const targetcardIndex = reqUser.deck.findIndex((card) => {
                     if(card.name === req.body.cardname)
                         return true;
@@ -27,7 +26,7 @@ module.exports = function(User) {
                 else
                 //Right now cards just get refreshed to 20 pp
                     reqUser.deck[targetcardIndex].pp = 20;
-                returnPP = reqUser.deck[targetcardIndex].pp;
+                const returnPP = reqUser.deck[targetcardIndex].pp;
                 reqUser.save();
                 res.send(returnPP);
             }

@@ -35,7 +35,10 @@ module.exports = function(mongoose) {
 
         const newNode = new Node({
             name: req.body.name,
-            location: req.body.location
+            location: {
+                type: "Point",
+                coordinates: [req.body.lon, req.body.lat]
+            }
         });
 
         newNode.save();

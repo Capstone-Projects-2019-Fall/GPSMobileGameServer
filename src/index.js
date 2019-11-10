@@ -3,7 +3,7 @@ const app = express();
 
 //This works when in heroku
 const mongo_uri = process.env.MONGODB_URI;
-const port = process.env.PORT | 3000;
+const port = process.env.PORT || 3000;
 
 //Use this for local test
 // const mongo_uri = 'mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr';

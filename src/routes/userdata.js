@@ -10,7 +10,7 @@ module.exports = function(User) {
     userdata.use(bodyParser.json());
 
     userdata.get('/', (req, res) => {
-        const username = req.body.name;
+        const username = req.query.name;
 
         User.find({
             name: username

@@ -35,7 +35,7 @@ app.get('/startenemynode', (req,res) => {
         .then((response) => {
             console.log(response.data);
         })
-        .catch((error) => {
+        .catch((error) => { 
             console.log(error);
             clearInterval(nodeCheckInterval);
         });

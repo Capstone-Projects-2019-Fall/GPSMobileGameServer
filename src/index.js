@@ -42,7 +42,7 @@ app.get('/startenemynode', (req,res) => {
                         nodename: currentnode.name,
                         hp: 100,
                         regenrate: 5,
-                        attack: ['punch','kick']
+                        attacks: ['punch','kick']
                     },{
                         proxy:{
                             port: 3000

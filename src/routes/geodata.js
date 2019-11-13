@@ -65,6 +65,18 @@ module.exports = function(mongoose) {
             }
         });
     });
-
+    geodata.get('/resetnodes', (req,res) => {
+        Node.find({},(err, result) => {
+            if(err)
+                console.log(err);
+                console.log(result);
+                for (const node in result){
+                    console.log(result[node]);
+                    result[node].structure = 'Friendly';
+                    result[node].save();
+                }
+                res.send('Nodes reset success');
+            });
+    });
     return geodata;
 };

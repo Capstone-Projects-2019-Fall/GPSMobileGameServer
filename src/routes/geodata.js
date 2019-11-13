@@ -13,7 +13,7 @@ module.exports = function(mongoose) {
         const lat = req.query.lat;
         const long = req.query.long;
         const maxDist = req.query.maxDist || 2000;
-
+        const struct = req.query.structure
         Node.find({
             location: {
                 $near: {
@@ -23,7 +23,8 @@ module.exports = function(mongoose) {
                         coordinates: [long, lat]
                     }
                 }
-            }
+            },
+            structure: struct
         }, (err, result) => {
             if (err)
                 console.log(err);

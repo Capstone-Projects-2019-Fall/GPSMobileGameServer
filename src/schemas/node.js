@@ -12,7 +12,8 @@ module.exports = function(mongoose) {
                 type: [Number],
                 required: true
             }
-        }
+        },
+        structure: String
     });
     nodeSchema.index({location: '2dsphere'});
 

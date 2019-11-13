@@ -54,6 +54,17 @@ module.exports = function(mongoose) {
 
         res.send('Done');
     });
+    geodata.post('/updatebyname', (req,res) => {
+        Node.findOne({name: req.body.name},(err, reqNode) => {
+            if(err)
+                console.log(err);
+            else{
+                reqNode.structure = req.body.structure;
+                reqNode.save();
+                res.send(JSON.stringify(reqNode));
+            }
+        });
+    });
 
     return geodata;
 };

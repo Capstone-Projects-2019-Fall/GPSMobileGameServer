@@ -34,11 +34,12 @@ app.get('/startenemynode', (req,res) => {
         })
         .then((response) => {
             for (const node in response.data){
+                const currentnode = response.data[node];
                 if((Math.floor(Math.random() * Math.floor(100))) <= 30){
                     console.log('about to change node')
                     axios.post('/enemy',{
-                        name: 'Boss' + node.name,
-                        nodename: node.name,
+                        name: 'Boss' + currentnode.name,
+                        nodename: currentnode.name,
                         hp: 100,
                         regenrate: 5,
                         attack: ['punch','kick']
@@ -48,9 +49,20 @@ app.get('/startenemynode', (req,res) => {
                         }
                     })
                     .then((response) => {
-                        node.structure = 'Enemy';
-                        node.save();
-                        console.log('node changed');
+                        axios.post('/geodata/updatebyname',{
+                            name: currentnode.name,
+                            structure: 'Enemy'
+                        },{
+                            proxy:{
+                                port: 3000
+                            }
+                        })
+                        .then((response) => {
+                            console.log('node changed');
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
                     })
                     .catch((err) => {
                         console.log(err);

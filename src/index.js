@@ -24,16 +24,39 @@ db.once('open', function() {
 });
 
 app.get('/', (req, res) => res.send('Hello World!'));
-const nodeCheckInterval = null;
+var nodeCheckInterval = false;
 app.get('/startenemynode', (req,res) => {
     nodeCheckInterval = setInterval(() => {
-        axios.get('/geodata?structure=Friendly',{
+        axios.get('/geodata/Friendly',{
             proxy:{
                 port: 3000
             }
         })
         .then((response) => {
-            console.log(response.data);
+            for (const node in response.data){
+                if((Math.floor(Math.random() * Math.floor(100))) <= 30){
+                    console.log('about to change node')
+                    axios.post('/enemy',{
+                        name: 'Boss' + node.name,
+                        nodename: node.name,
+                        hp: 100,
+                        regenrate: 5,
+                        attack: ['punch','kick']
+                    },{
+                        proxy:{
+                            port: 3000
+                        }
+                    })
+                    .then((response) => {
+                        node.structure = 'Enemy';
+                        node.save();
+                        console.log('node changed');
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                }
+            }
         })
         .catch((error) => { 
             console.log(error);

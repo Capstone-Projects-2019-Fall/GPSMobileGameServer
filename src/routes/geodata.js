@@ -29,7 +29,7 @@ module.exports = function(mongoose) {
             res.send(JSON.stringify(result));
         });
     });
-    geodata.get('/:structure', (req,res) => {
+    geodata.get('/findbystructure/:structure', (req,res) => {
         const struct = req.params.structure || 'Friendly';
         Node.find({
             structure: struct
@@ -54,6 +54,7 @@ module.exports = function(mongoose) {
 
         res.send('Done');
     });
+    //Update a node by node name
     geodata.post('/updatebyname', (req,res) => {
         Node.findOne({name: req.body.name},(err, reqNode) => {
             if(err)
@@ -65,13 +66,12 @@ module.exports = function(mongoose) {
             }
         });
     });
+    //Reset all nodes to friendly state
     geodata.get('/resetnodes', (req,res) => {
         Node.find({},(err, result) => {
             if(err)
                 console.log(err);
-                console.log(result);
                 for (const node in result){
-                    console.log(result[node]);
                     result[node].structure = 'Friendly';
                     result[node].save();
                 }

@@ -3,11 +3,11 @@ const app = express();
 const axios = require('axios');
 
 //This works when in heroku
-// const mongo_uri = process.env.MONGODB_URI;
+const mongo_uri = process.env.MONGODB_URI;
 const port = process.env.PORT || 3000;
 
 //Use this for local test
-const mongo_uri = 'mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr';
+// const mongo_uri = 'mongodb://general_user:Welcome1!@ds237308.mlab.com:37308/heroku_0lr22jrr';
 
 const mongoose = require('mongoose');
 mongoose.connect(mongo_uri, {useNewUrlParser: true});
@@ -24,19 +24,25 @@ db.once('open', function() {
 });
 
 app.get('/', (req, res) => res.send('Hello World!'));
+//Interval for our enemy update
 var nodeCheckInterval = false;
+const intervalTime = 300000;
 app.get('/startenemynode', (req,res) => {
     nodeCheckInterval = setInterval(() => {
-        axios.get('/geodata/Friendly',{
+        //Find all friendly nodes
+        axios.get('/geodata/findbystructure/Friendly',{
             proxy:{
-                port: 3000
+                port: port
             }
         })
         .then((response) => {
             for (const node in response.data){
                 const currentnode = response.data[node];
-                if((Math.floor(Math.random() * Math.floor(100))) <= 30){
+                const turn_chance = 10;
+                //Nodes have a 'turn_chance'% chance of turning into an enemy
+                if((Math.floor(Math.random() * Math.floor(100))) <= turn_chance){
                     console.log('about to change node')
+                    //Creating a new boss tied to the chosen node name
                     axios.post('/enemy',{
                         name: 'Boss' + currentnode.name,
                         nodename: currentnode.name,
@@ -45,16 +51,17 @@ app.get('/startenemynode', (req,res) => {
                         attacks: ['punch','kick']
                     },{
                         proxy:{
-                            port: 3000
+                            port: port
                         }
                     })
                     .then((response) => {
+                        //Update/flip the node structure to enemy
                         axios.post('/geodata/updatebyname',{
                             name: currentnode.name,
                             structure: 'Enemy'
                         },{
                             proxy:{
-                                port: 3000
+                                port: port
                             }
                         })
                         .then((response) => {
@@ -74,9 +81,10 @@ app.get('/startenemynode', (req,res) => {
             console.log(error);
             clearInterval(nodeCheckInterval);
         });
-    },5000);
+    },intervalTime);
     res.send("Looping interval");
 });
+//Stop the enemy turning interval if needed
 app.get('/stopenemynode',(req,res) => {
     if(nodeCheckInterval){
         clearInterval(nodeCheckInterval);

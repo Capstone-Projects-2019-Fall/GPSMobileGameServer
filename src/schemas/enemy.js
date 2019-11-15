@@ -8,7 +8,7 @@ module.exports = function(mongoose) {
         attacks: [String]
 
     });
-    enemySchema.index({name: -1});
+    enemySchema.index({location: '2dsphere',name: -1});
 
     const Enemy = mongoose.model('enemy', enemySchema);
 

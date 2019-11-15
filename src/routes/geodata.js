@@ -71,12 +71,12 @@ module.exports = function(mongoose) {
         Node.find({},(err, result) => {
             if(err)
                 console.log(err);
-                for (const node in result){
-                    result[node].structure = 'Friendly';
-                    result[node].save();
-                }
-                res.send('Nodes reset success');
-            });
+            for (const node in result){
+                result[node].structure = 'Friendly';
+                result[node].save();
+            }
+            res.send('Nodes reset success');
+        });
     });
     return geodata;
 };

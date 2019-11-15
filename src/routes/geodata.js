@@ -13,7 +13,6 @@ module.exports = function(mongoose) {
         const lat = req.query.lat;
         const long = req.query.long;
         const maxDist = req.query.maxDist || 2000;
-
         Node.find({
             location: {
                 $near: {
@@ -28,6 +27,16 @@ module.exports = function(mongoose) {
             if (err)
                 console.log(err);
             res.send(JSON.stringify(result));
+        });
+    });
+    geodata.get('/findbystructure/:structure', (req,res) => {
+        const struct = req.params.structure || 'Friendly';
+        Node.find({
+            structure: struct
+        }, (err, result) => {
+            if(err)
+                console.log(err);
+                res.send(JSON.stringify(result));
         });
     });
 
@@ -45,6 +54,29 @@ module.exports = function(mongoose) {
 
         res.send('Done');
     });
-
+    //Update a node by node name
+    geodata.post('/updatebyname', (req,res) => {
+        Node.findOne({name: req.body.name},(err, reqNode) => {
+            if(err)
+                console.log(err);
+            else{
+                reqNode.structure = req.body.structure;
+                reqNode.save();
+                res.send(JSON.stringify(reqNode));
+            }
+        });
+    });
+    //Reset all nodes to friendly state
+    geodata.get('/resetnodes', (req,res) => {
+        Node.find({},(err, result) => {
+            if(err)
+                console.log(err);
+            for (const node in result){
+                result[node].structure = 'Friendly';
+                result[node].save();
+            }
+            res.send('Nodes reset success');
+        });
+    });
     return geodata;
 };

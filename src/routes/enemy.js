@@ -9,15 +9,52 @@ module.exports = function(mongoose) {
     enemy.use(bodyParser.urlencoded({extended: false}));
     enemy.use(bodyParser.json());
 
-    enemy.get('/', (req, res) => {
-        const nodename = req.query.nodename;
+    /**
+     * Gets a specified enemy. Returns an enemy object with nodename = ":nodename".
+     * Returns 404 if the specified enemy does not exist.
+     */
+    enemy.get('/:nodename', (req, res) => {
+        const nodename = req.params.nodename;
 
-        Enemy.find({
+        Enemy.findOne({
             nodename: nodename
         }, (err, result) => {
             if (err)
                 console.log(err);
-            res.send(JSON.stringify(result));
+            if(result === null){
+                res.status(404).send('No matching enemy found.');
+            }
+            else{
+                res.send(JSON.stringify(result));
+            }
+        });
+    });
+
+    /**
+     * Updates the state of an existing enemy. Returns an updated enemy object with nodename = ":nodename".
+     * Returns 404 if the specified enemy does not exist.
+     */
+    enemy.post('/:nodename', (req, res) => {
+        const nodename = req.params.nodename;
+
+        Enemy.findOne({
+            nodename: nodename
+        }, (err, result) => {
+            if (err)
+                console.log(err);
+            if(result === null){
+                res.status(404).send('No matching enemy found.');
+            }
+            else{
+                for(var property in req.body){
+                    if(Object.prototype.hasOwnProperty.call(req.body, property))
+                    {
+                        result[property] = req.body[property];
+                    }
+                }
+                result.save();
+                res.send(JSON.stringify(result));
+            }
         });
     });
 

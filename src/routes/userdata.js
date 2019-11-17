@@ -9,8 +9,8 @@ module.exports = function(mongoose) {
     userdata.use(bodyParser.urlencoded({extended: false}));
     userdata.use(bodyParser.json());
 
-    userdata.get('/', (req, res) => {
-        const username = req.query.name;
+    userdata.get('/:name', (req, res) => {
+        const username = req.params.name;
 
         User.find({
             name: username
@@ -31,7 +31,7 @@ module.exports = function(mongoose) {
 
         newUser.save();
 
-        res.send(username);
+        res.send(newUser);
     });
 
     userdata.post('/deck', (req, res) => {
@@ -52,6 +52,37 @@ module.exports = function(mongoose) {
                 reqUser.save();
                 res.send(returnPP);
             }
+        });
+    });
+
+    /**
+     * Gets "name"'s deck. Returns an array of integers.
+     */
+    userdata.get('/:name/deck', (req, res) => {
+        const username = req.params.name;
+        User.findOne({
+            name: username
+        }, (err, result) => {
+            if (err)
+                console.log(err);
+            res.send(result.deck);
+        });
+    });
+
+    /**
+     * Updates "name"'s deck. Returns 200 OK status.
+     */
+    userdata.post('/:name/deck', (req, res) => {
+        const username = req.params.name;
+
+        User.findOne({
+            name: username
+        }, (err, result) => {
+            if (err)
+                console.log(err);
+            result.deck = req.body.deck;
+            result.save()
+            res.sendStatus(200);
         });
     });
 

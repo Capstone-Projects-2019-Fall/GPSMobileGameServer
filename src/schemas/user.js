@@ -3,12 +3,7 @@ module.exports = function(mongoose) {
     const userSchema = new mongoose.Schema({
         name: String,
         password: String,
-        deck: [{
-            name: String,
-            level: Number,
-            energy: Number,
-            pp: Number
-        }]
+        deck: [Number]
     });
     userSchema.index({name: -1});
 

@@ -34,7 +34,7 @@ module.exports = function(mongoose) {
      * Updates the state of an existing enemy. Returns an updated enemy object with nodename = ":nodename".
      * Returns 404 if the specified enemy does not exist.
      */
-    enemy.post('/:nodename', (req, res) => {
+    enemy.post('/update/:nodename', (req, res) => {
         const nodename = req.params.nodename;
 
         Enemy.findOne({

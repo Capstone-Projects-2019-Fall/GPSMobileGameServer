@@ -30,6 +30,19 @@ module.exports = function(mongoose) {
         });
     });
 
+    enemy.get('/delete/:nodename', (req, res) => {
+        const nodename = req.params.nodename;
+
+        Enemy.deleteOne({
+            nodename: nodename
+        }, (err, result) => {
+            if (err)
+                console.log(err);
+            else
+                res.send('Enemy delete successful.')
+            });
+    })
+
     /**
      * Updates the state of an existing enemy. Returns an updated enemy object with nodename = ":nodename".
      * Returns 404 if the specified enemy does not exist.

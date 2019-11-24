@@ -30,7 +30,7 @@ module.exports = function(mongoose) {
         });
     });
 
-    enemy.get('/delete/:nodename', (req, res) => {
+    enemy.delete('/:nodename', (req, res) => {
         const nodename = req.params.nodename;
 
         Enemy.deleteOne({

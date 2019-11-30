@@ -15,9 +15,16 @@ module.exports = function(mongoose) {
         User.find({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            res.send(JSON.stringify(result));
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching user found.');
+            }
+            else{
+                res.json(result);
+            }
         });
     });
 
@@ -37,8 +44,10 @@ module.exports = function(mongoose) {
     userdata.post('/deck', (req, res) => {
 
         User.findOne({name: req.body.name},(err, reqUser) => {
-            if(err)
+            if (err){
                 console.log(err);
+                res.status(500).send(err);
+            }
             else{
                 const targetcardIndex = reqUser.deck.findIndex((card) => {
                     return card.name === req.body.cardname;
@@ -63,9 +72,16 @@ module.exports = function(mongoose) {
         User.findOne({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            res.send(result.deck);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                res.json(result.deck);
+            }
         });
     });
 
@@ -78,11 +94,18 @@ module.exports = function(mongoose) {
         User.findOne({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            result.deck = req.body.deck;
-            result.save()
-            res.sendStatus(200);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                result.deck = req.body.deck;
+                result.save()
+                res.sendStatus(200);
+            }            
         });
     });
 

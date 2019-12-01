@@ -24,19 +24,28 @@ module.exports = function(mongoose) {
                 }
             }
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            res.send(JSON.stringify(result));
+                res.status(500).send(err);
+            }
+            else{
+                res.json(result);
+            }
         });
     });
+
     geodata.get('/findbystructure/:structure', (req,res) => {
         const struct = req.params.structure || 'Friendly';
         Node.find({
             structure: struct
         }, (err, result) => {
-            if(err)
+            if (err){
                 console.log(err);
-                res.send(JSON.stringify(result));
+                res.status(500).send(err);
+            }
+            else{
+                res.json(result);
+            }
         });
     });
 
@@ -54,28 +63,41 @@ module.exports = function(mongoose) {
 
         res.send('Done');
     });
+
     //Update a node by node name
-    geodata.post('/updatebyname', (req,res) => {
-        Node.findOne({name: req.body.name},(err, reqNode) => {
-            if(err)
+    geodata.post('/update/:nodename', (req,res) => {
+        const nodename = req.params.nodename;
+
+        Node.findOne({name: nodename},(err, reqNode) => {
+            if (err){
                 console.log(err);
+                res.status(500).send(err);
+            }
+            else if(reqNode === null){
+                res.status(404).send('No matching node found.');
+            }
             else{
                 reqNode.structure = req.body.structure;
                 reqNode.save();
-                res.send(JSON.stringify(reqNode));
+                res.json(reqNode);
             }
         });
     });
+
     //Reset all nodes to friendly state
     geodata.get('/resetnodes', (req,res) => {
         Node.find({},(err, result) => {
-            if(err)
+            if (err){
                 console.log(err);
-            for (const node in result){
-                result[node].structure = 'Friendly';
-                result[node].save();
+                res.status(500).send(err);
             }
-            res.send('Nodes reset success');
+            else{
+                for (const node in result){
+                    result[node].structure = 'Friendly';
+                    result[node].save();
+                }
+                res.send('Nodes reset success');
+            }            
         });
     });
     return geodata;

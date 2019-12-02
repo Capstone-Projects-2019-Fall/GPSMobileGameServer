@@ -12,7 +12,7 @@ module.exports = function(mongoose) {
     userdata.get('/:name', (req, res) => {
         const username = req.params.name;
 
-        User.find({
+        User.findOne({
             name: username
         }, (err, result) => {
             if (err){

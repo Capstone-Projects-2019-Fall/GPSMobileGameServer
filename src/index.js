@@ -26,7 +26,7 @@ db.once('open', function() {
 app.get('/', (req, res) => res.send('Hello World!'));
 //Interval for our enemy update
 var nodeCheckInterval = false;
-const intervalTime = 300000;
+const intervalTime = 100000;
 app.get('/startenemynode', (req,res) => {
     nodeCheckInterval = setInterval(() => {
         //Find all friendly nodes

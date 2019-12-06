@@ -28,6 +28,7 @@ module.exports = function(mongoose) {
         });
     });
 
+
     userdata.post('/', (req, res) => {
         const username = req.body.name;
         const newUser = new User({
@@ -80,7 +81,8 @@ module.exports = function(mongoose) {
                 res.status(404).send('No matching player found.');
             }
             else{
-                res.json(result.deck);
+                const deck = result.toObject().collection.filter(card => card.inDeck);
+                res.json(deck);
             }
         });
     });
@@ -103,9 +105,29 @@ module.exports = function(mongoose) {
             }
             else{
                 result.deck = req.body.deck;
-                result.save()
+                result.save();
                 res.sendStatus(200);
             }            
+        });
+    });
+
+    userdata.get('/:name/collection', (req, res) => {
+        const username = req.params.name;
+
+        User.findOne({
+            name: username
+        }, (err, result) => {
+            if (err){
+                console.log(err);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                const collection = result.toObject().collection;
+                res.json(collection);
+            }
         });
     });
 

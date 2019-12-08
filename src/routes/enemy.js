@@ -19,13 +19,15 @@ module.exports = function(mongoose) {
         Enemy.findOne({
             nodename: nodename
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            if(result === null){
+                res.status(500).send(err);
+            }
+            else if(result === null){
                 res.status(404).send('No matching enemy found.');
             }
             else{
-                res.send(JSON.stringify(result));
+                res.json(result);
             }
         });
     });
@@ -36,10 +38,16 @@ module.exports = function(mongoose) {
         Enemy.deleteOne({
             nodename: nodename
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            else
+                res.status(500).send(err);
+            }
+            else if(result.deletedCount === 0){
+                res.status(404).send('No matching enemy found.');
+            }
+            else{
                 res.send('Enemy delete successful.')
+            }
             });
     })
 
@@ -53,9 +61,11 @@ module.exports = function(mongoose) {
         Enemy.findOne({
             nodename: nodename
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            if(result === null){
+                res.status(500).send(err);
+            }
+            else if(result === null){
                 res.status(404).send('No matching enemy found.');
             }
             else{
@@ -66,7 +76,7 @@ module.exports = function(mongoose) {
                     }
                 }
                 result.save();
-                res.send(JSON.stringify(result));
+                res.json(result);
             }
         });
     });

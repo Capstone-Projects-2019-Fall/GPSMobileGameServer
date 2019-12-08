@@ -12,21 +12,29 @@ module.exports = function(mongoose) {
     userdata.get('/:name', (req, res) => {
         const username = req.params.name;
 
-        User.find({
+        User.findOne({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            res.send(JSON.stringify(result));
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching user found.');
+            }
+            else{
+                res.json(result);
+            }
         });
     });
+
 
     userdata.post('/', (req, res) => {
         const username = req.body.name;
         const newUser = new User({
             name: req.body.name,
             password: req.body.password,
-            deck: []
+            library: {}
         });
 
         newUser.save();
@@ -34,23 +42,26 @@ module.exports = function(mongoose) {
         res.send(newUser);
     });
 
-    userdata.post('/deck', (req, res) => {
-
-        User.findOne({name: req.body.name},(err, reqUser) => {
-            if(err)
+    userdata.put('/:name/library', (req, res) => {
+        const username = req.params.name;
+        User.findOne({name: username},(err, reqUser) => {
+            if (err){
                 console.log(err);
+                res.status(500).send(err);
+            }
             else{
-                const targetcardIndex = reqUser.deck.findIndex((card) => {
-                    return card.name === req.body.cardname;
+                req.body.forEach(reqCard => {
+                    var userCard = reqUser.library.id(reqCard.id);
+                    if (userCard) {
+                        Object.keys(reqCard).forEach(key => {
+                            userCard[key] = reqCard[key];
+                        });
+                    } else {
+                        reqUser.library.push(reqCard);
+                    }
                 });
-                if(req.body.isrefresh === 0)
-                    reqUser.deck[targetcardIndex].pp -= 1;
-                else
-                //Right now cards just get refreshed to 20 pp
-                    reqUser.deck[targetcardIndex].pp = 20;
-                const returnPP = reqUser.deck[targetcardIndex].pp;
                 reqUser.save();
-                res.send(returnPP);
+                res.json(reqUser.library);
             }
         });
     });
@@ -63,26 +74,37 @@ module.exports = function(mongoose) {
         User.findOne({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            res.send(result.deck);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                const deck = result.toObject().library.filter(card => card.inDeck > 0);
+                res.json(deck);
+            }
         });
     });
 
-    /**
-     * Updates "name"'s deck. Returns 200 OK status.
-     */
-    userdata.post('/:name/deck', (req, res) => {
+    userdata.get('/:name/library', (req, res) => {
         const username = req.params.name;
 
         User.findOne({
             name: username
         }, (err, result) => {
-            if (err)
+            if (err){
                 console.log(err);
-            result.deck = req.body.deck;
-            result.save()
-            res.sendStatus(200);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                const library = result.toObject().library;
+                res.json(library);
+            }
         });
     });
 

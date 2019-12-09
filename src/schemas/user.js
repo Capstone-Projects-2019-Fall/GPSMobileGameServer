@@ -11,7 +11,18 @@ module.exports = function(mongoose) {
     const userSchema = new mongoose.Schema({
         name: String,
         password: String,
-        library: [cardSchema]
+        library: [cardSchema],
+        homebase: {
+            type: {
+                type: String, // Don't do `{ location: { type: String } }`
+                enum: ['Point'], // 'location.type' must be 'Point'
+                required: true
+            },
+            coordinates: {
+                type: [Number],
+                required: true
+            }
+        },
     });
     userSchema.index({name: -1});
 

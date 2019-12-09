@@ -34,7 +34,11 @@ module.exports = function(mongoose) {
         const newUser = new User({
             name: req.body.name,
             password: req.body.password,
-            library: {}
+            library: {},
+            homebase: {
+                type: "Point",
+                coordinates: [req.body.lon || 0, req.body.lat || 0]
+            }
         });
 
         newUser.save();
@@ -104,6 +108,28 @@ module.exports = function(mongoose) {
             else{
                 const library = result.toObject().library;
                 res.json(library);
+            }
+        });
+    });
+
+    /* set name's homebase coordinates*/
+    userdata.post('/:name/homebase', (req, res) => {
+        const username = req.params.name;
+
+        User.findOne({
+            name: username
+        }, (err, result) => {
+            if (err){
+                console.log(err);
+                res.status(500).send(err);
+            }
+            else if(result === null){
+                res.status(404).send('No matching player found.');
+            }
+            else{
+                result.homebase.coordinates = [req.body.lon, req.body.lat];
+                result.save();
+                res.json(result);
             }
         });
     });

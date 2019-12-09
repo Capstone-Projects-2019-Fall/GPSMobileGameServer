@@ -35,9 +35,9 @@ module.exports = function(mongoose) {
             name: req.body.name,
             password: req.body.password,
             library: {},
-            location: {
+            homebase: {
                 type: "Point",
-                coordinates: [0,0]
+                coordinates: [req.body.lon || 0, req.body.lat || 0]
             }
         });
 

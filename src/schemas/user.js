@@ -1,16 +1,16 @@
 module.exports = function(mongoose) {
 
     const cardSchema = new mongoose.Schema({
-        name: String,
+        id: Number,
         level: Number,
-        energy: Number,
-        pp: Number,
         inDeck: Boolean
     });
 
     const userSchema = new mongoose.Schema({
         name: String,
         password: String,
+        health: Number,
+        gold: Number,
         library: [cardSchema],
         homebase: {
             type: {

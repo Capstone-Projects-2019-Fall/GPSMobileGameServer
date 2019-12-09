@@ -30,11 +30,12 @@ module.exports = function(mongoose) {
 
 
     userdata.post('/', (req, res) => {
-        const username = req.body.name;
         const newUser = new User({
             name: req.body.name,
             password: req.body.password,
-            library: {},
+            health: 100,
+            gold: 0,
+            library: req.body.library || {},
             homebase: {
                 type: "Point",
                 coordinates: [req.body.lon || 0, req.body.lat || 0]
@@ -46,24 +47,37 @@ module.exports = function(mongoose) {
         res.send(newUser);
     });
 
-    userdata.put('/:name/library', (req, res) => {
+    userdata.post('/update/:name', (req, res) => {
         const username = req.params.name;
         User.findOne({name: username},(err, reqUser) => {
             if (err){
                 console.log(err);
                 res.status(500).send(err);
             }
+            else if(reqUser === null){
+                res.status(404).send('No matching user found.');
+            }
             else{
-                req.body.forEach(reqCard => {
-                    var userCard = reqUser.library.id(reqCard.id);
-                    if (userCard) {
-                        Object.keys(reqCard).forEach(key => {
-                            userCard[key] = reqCard[key];
-                        });
-                    } else {
-                        reqUser.library.push(reqCard);
-                    }
-                });
+                reqUser.health = req.body.health || reqUser.health;
+                reqUser.gold = req.body.gold || reqUser.gold;
+                reqUser.save();
+                res.json(reqUser);
+            }
+        });
+    });
+
+    userdata.post('/:name/library', (req, res) => {
+        const username = req.params.name;
+        User.findOne({name: username},(err, reqUser) => {
+            if (err){
+                console.log(err);
+                res.status(500).send(err);
+            }
+            else if(reqUser === null){
+                res.status(404).send('No matching user found.');
+            }
+            else{
+                reqUser.library = req.body;
                 reqUser.save();
                 res.json(reqUser.library);
             }
@@ -86,7 +100,7 @@ module.exports = function(mongoose) {
                 res.status(404).send('No matching player found.');
             }
             else{
-                const deck = result.toObject().library.filter(card => card.inDeck > 0);
+                const deck = result.toObject().library.filter(card => card.inDeck === true);
                 res.json(deck);
             }
         });

@@ -38,7 +38,7 @@ module.exports = function(mongoose) {
             library: req.body.library || {},
             homebase: {
                 type: "Point",
-                coordinates: [req.body.lon || 0, req.body.lat || 0]
+                coordinates: [req.body.lon || -75.152995, req.body.lat || 39.981712]
             }
         });
 
